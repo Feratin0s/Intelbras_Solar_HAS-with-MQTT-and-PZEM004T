@@ -1,0 +1,99 @@
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+  sensor:
+#Monitoramento Consumo Energia
+  - name: "Consumo Casa"
+    state_topic: "casa/medidor/energy"
+    unit_of_measurement: "kWh"
+    device_class: "energy"
+    unique_id: consumo_casa
+
+  - name: "Voltagem"
+    state_topic: "casa/medidor/voltage"
+    unit_of_measurement: "V"
+    device_class: "voltage"
+    unique_id: voltagem
+
+  - name: "Corrente"
+    state_topic: "casa/medidor/current"
+    unit_of_measurement: "A"
+    device_class: "current"
+    unique_id: corrente
+
+  - name: "Produção Solar - Atual" #Sempre positiva ---> ATUAL
+    state_topic: "casa/medidor/SolarProduction"
+    unit_of_measurement: "W"
+    device_class: "power"
+    unique_id: power_solar
+
+  - name: "Energia Injetada - Atual" #Sempre positiva ---> ATUAL
+    state_topic: "casa/medidor/InjectedEnergy"
+    unit_of_measurement: "W"
+    device_class: "power"
+    unique_id: power_injetada
+
+  - name: "Energia Grid - Atual" #Sempre positiva ----> ATUAL
+    state_topic: "casa/medidor/energyGrid"
+    unit_of_measurement: "W"
+    device_class: "power"
+    unique_id: power_grid
+
+  - name: "Consumo Casa - Atual" #Sempre positiva ----> ATUAL
+    state_topic: "casa/medidor/power"
+    unit_of_measurement: "W"
+    device_class: "power"
+    unique_id: power_casa
+
+  - name: "Energia Injetada - Total" #Valor total em Kwh
+    state_topic: "casa/medidor/InjectedEnergy_total"
+    unit_of_measurement: "kWh"
+    state_class: "total_increasing"
+    device_class: "energy"
+    unique_id: energia_injetada_total
+
+  - name: "Energia Grid - Total" #Sempre positiva --> Valor total em Kwh
+    state_topic: "casa/medidor/energyGrid_total"
+    unit_of_measurement: "kWh"
+    state_class: "total_increasing"
+    device_class: "energy"
+    unique_id: energia_grid_total
+
+  - name: "Produção Solar Total" #Sempre positiva --> Valor total em Kwh
+    state_topic: "casa/medidor/SolarProductionTotal"
+    unit_of_measurement: "kWh"
+    state_class: "total_increasing"
+    device_class: "energy"
+    unique_id: energia_painel_total
+
+  - name: "Produção Solar - Mês" #Sempre positiva --> Valor total em Kwh
+    state_topic: "casa/medidor/MonthProduction"
+    unit_of_measurement: "kWh"
+    state_class: "total_increasing"
+    device_class: "energy"
+    unique_id: energia_month_production
+
+group:
+  energia:
+    name: "Energia"
+    entities:
+      - sensor.consumo_casa
+      - sensor.energia_injetada_total
+      - sensor.energia_grid_total
+      - sensor.voltagem
+      - sensor.corrente
+      - sensor.consumo_casa_atual
+      - sensor.energia_grid_atual_2
+      - sensor.energia_injetada_atual_2
+      - sensor.producao_solar_atual
+      - sensor.producao_solar_total
+      - sensor.producao_solar_mes
+
+

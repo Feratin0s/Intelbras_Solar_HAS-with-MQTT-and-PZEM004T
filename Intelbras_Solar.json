@@ -1,0 +1,503 @@
+[
+    {
+        "id": "be21d223d2456a81",
+        "type": "tab",
+        "label": "Energia Solar + Medidor",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "7e0748986a6899b7",
+        "type": "http request",
+        "z": "be21d223d2456a81",
+        "name": "Intelbras Solar",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://solar-monitoramento.intelbras.com.br/login",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "other",
+                "keyValue": "Content-Type",
+                "valueType": "other",
+                "valueValue": "application/x-www-form-urlencoded"
+            }
+        ],
+        "x": 480,
+        "y": 120,
+        "wires": [
+            [
+                "d5f655547d9ef394"
+            ]
+        ]
+    },
+    {
+        "id": "29b8877b494e2f12",
+        "type": "function",
+        "z": "be21d223d2456a81",
+        "name": "Envia o login",
+        "func": "msg.payload = \"account=*********&password=***********&validateCode=&lang=en\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 120,
+        "wires": [
+            [
+                "7e0748986a6899b7"
+            ]
+        ]
+    },
+    {
+        "id": "ce37f45d6c374ce6",
+        "type": "http request",
+        "z": "be21d223d2456a81",
+        "name": "index/getPlantListTitle",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://solar-monitoramento.intelbras.com.br/index/getPlantListTitle",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 1080,
+        "y": 120,
+        "wires": [
+            [
+                "e2192a280284ab09",
+                "d5839bc5ede6383d"
+            ]
+        ]
+    },
+    {
+        "id": "d5f655547d9ef394",
+        "type": "change",
+        "z": "be21d223d2456a81",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "cookies",
+                "pt": "flow",
+                "to": "headers['set-cookie']",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 680,
+        "y": 120,
+        "wires": [
+            [
+                "bc01edca4068b6fe"
+            ]
+        ]
+    },
+    {
+        "id": "bc01edca4068b6fe",
+        "type": "function",
+        "z": "be21d223d2456a81",
+        "name": "Junta Cookie",
+        "func": "let cookies = flow.get('cookies');\n\n// Verifica se o valor é um array antes de usar 'join'\nif (Array.isArray(cookies)) {\n    msg.headers = { \"Cookie\": cookies.join('; ') };\n    node.warn(msg.headers);\n} else {\n    msg.headers = { \"Cookie\": cookies };\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 870,
+        "y": 120,
+        "wires": [
+            [
+                "ce37f45d6c374ce6"
+            ]
+        ]
+    },
+    {
+        "id": "e2192a280284ab09",
+        "type": "debug",
+        "z": "be21d223d2456a81",
+        "name": "Correção de erros",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1110,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "15918430fc090b3d",
+        "type": "link in",
+        "z": "be21d223d2456a81",
+        "name": "Link1 Out",
+        "links": [
+            "d5839bc5ede6383d"
+        ],
+        "x": 45,
+        "y": 180,
+        "wires": [
+            [
+                "cbf8b37553cad835"
+            ]
+        ]
+    },
+    {
+        "id": "d5839bc5ede6383d",
+        "type": "link out",
+        "z": "be21d223d2456a81",
+        "name": "Link1",
+        "mode": "link",
+        "links": [
+            "15918430fc090b3d"
+        ],
+        "x": 1255,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "afa817d23ed0566f",
+        "type": "http request",
+        "z": "be21d223d2456a81",
+        "name": "panel/getDevicesByPlantList",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://solar-monitoramento.intelbras.com.br/panel/getDevicesByPlantList",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 420,
+        "y": 180,
+        "wires": [
+            [
+                "6327da71084c7468",
+                "c94b1a32c811d86d",
+                "bfc65672f3597728",
+                "f418491855dcd5e9"
+            ]
+        ]
+    },
+    {
+        "id": "cbf8b37553cad835",
+        "type": "function",
+        "z": "be21d223d2456a81",
+        "name": "FormatPlantID",
+        "func": "// 1. Pega os cookies salvos\nlet cookies = flow.get('cookies');\nlet cookieHeader = Array.isArray(cookies) ? cookies.join('; ') : cookies;\n\nlet plantId;\n\ntry {\n    const dados = JSON.parse(msg.payload); // ← Se o JSON for inválido, quebra aqui!\n    plantId = dados[0].id;\n} catch (error) {\n    // O QUE FAZER SE DER ERRO\n    msg.payload = null;\n    node.error(\"Deu pau: \" + error.message);\n} finally {\n    // OPCIONAL: executa SEMPRE (com erro ou sem erro)\n    console.log(\"Processamento concluído\");\n}\n\nmsg.payload = `plantId=${plantId}&currPage=1`;\n\n// 4. Configura os cabeçalhos 'Cookie' e 'Content-Type'\nmsg.headers = {\n    \"Cookie\": cookieHeader,\n    \"Content-Type\": \"application/x-www-form-urlencoded\" // CRÍTICO: Indica o formato dos dados\n};\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 180,
+        "y": 180,
+        "wires": [
+            [
+                "afa817d23ed0566f"
+            ]
+        ]
+    },
+    {
+        "id": "201d67213435aefb",
+        "type": "mqtt out",
+        "z": "be21d223d2456a81",
+        "name": "HAS",
+        "topic": "",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "5babe960243aef0e",
+        "x": 1050,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "4390302afdd8f44a",
+        "type": "inject",
+        "z": "be21d223d2456a81",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "120",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 120,
+        "wires": [
+            [
+                "29b8877b494e2f12"
+            ]
+        ]
+    },
+    {
+        "id": "6327da71084c7468",
+        "type": "function",
+        "z": "be21d223d2456a81",
+        "name": "WattCurrent",
+        "func": "let watt;\n\ntry {\n    const dados = JSON.parse(msg.payload); // transforma em objeto\n    watt = dados.obj.datas[0].pac;\n} catch (error) {\n    msg.payload = null;\n    node.error(\"Deu pau: \" + error.message, msg);\n}\nmsg.topic = \"casa/medidor/SolarProduction\"; \nmsg.payload = watt;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 710,
+        "y": 180,
+        "wires": [
+            [
+                "201d67213435aefb"
+            ]
+        ]
+    },
+    {
+        "id": "c94b1a32c811d86d",
+        "type": "function",
+        "z": "be21d223d2456a81",
+        "name": "EnergyProduction",
+        "func": "let eTotal;\n\ntry {\n    const dados = JSON.parse(msg.payload); // transforma em objeto\n    eTotal = dados.obj.datas[0].eTotal;\n} catch (error) {\n    msg.payload = null;\n    node.error(\"Deu pau: \" + error.message, msg);\n}\nmsg.topic = \"casa/medidor/SolarProductionTotal\"; \nmsg.payload = eTotal;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 730,
+        "y": 220,
+        "wires": [
+            [
+                "201d67213435aefb",
+                "0ab55f98216b3135"
+            ]
+        ]
+    },
+    {
+        "id": "bfc65672f3597728",
+        "type": "function",
+        "z": "be21d223d2456a81",
+        "d": true,
+        "name": "TodayProduction",
+        "func": "let today;\n\ntry {\n    const dados = JSON.parse(msg.payload); // transforma em objeto\n    today = dados.obj.datas[0].eToday;\n} catch (error) {\n    msg.payload = null;\n    node.error(\"Deu pau: \" + error.message, msg);\n}\nmsg.topic = \"casa/medidor/TodayProduction\"; \nmsg.payload = today;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 730,
+        "y": 260,
+        "wires": [
+            [
+                "201d67213435aefb"
+            ]
+        ]
+    },
+    {
+        "id": "f418491855dcd5e9",
+        "type": "function",
+        "z": "be21d223d2456a81",
+        "name": "MonthProduction",
+        "func": "let month;\n\ntry {\n    const dados = JSON.parse(msg.payload); // transforma em objeto\n    month = dados.obj.datas[0].eMonth;\n} catch (error) {\n    msg.payload = null;\n    node.error(\"Deu pau: \" + error.message, msg);\n}\nmsg.topic = \"casa/medidor/MonthProduction\"; \nmsg.payload = month;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 730,
+        "y": 300,
+        "wires": [
+            [
+                "201d67213435aefb"
+            ]
+        ]
+    },
+    {
+        "id": "ce2e77f872d4eafa",
+        "type": "mqtt in",
+        "z": "be21d223d2456a81",
+        "name": "",
+        "topic": "casa/medidor/energy",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "5babe960243aef0e",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 140,
+        "y": 320,
+        "wires": [
+            [
+                "0369ddaad562ddab"
+            ]
+        ]
+    },
+    {
+        "id": "1abf5288c62cb699",
+        "type": "debug",
+        "z": "be21d223d2456a81",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 700,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "0ab55f98216b3135",
+        "type": "link out",
+        "z": "be21d223d2456a81",
+        "name": "LinkOut_Solar",
+        "mode": "link",
+        "links": [
+            "e69012f83e230863"
+        ],
+        "x": 945,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "e69012f83e230863",
+        "type": "link in",
+        "z": "be21d223d2456a81",
+        "name": "LinkIn_Solar",
+        "links": [
+            "0ab55f98216b3135"
+        ],
+        "x": 165,
+        "y": 260,
+        "wires": [
+            [
+                "0369ddaad562ddab"
+            ]
+        ]
+    },
+    {
+        "id": "0369ddaad562ddab",
+        "type": "join",
+        "z": "be21d223d2456a81",
+        "name": "",
+        "mode": "custom",
+        "build": "object",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "useparts": false,
+        "accumulate": true,
+        "timeout": "",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 350,
+        "y": 320,
+        "wires": [
+            [
+                "704098a4d3b4b899"
+            ]
+        ]
+    },
+    {
+        "id": "704098a4d3b4b899",
+        "type": "function",
+        "z": "be21d223d2456a81",
+        "name": "Injetada ou Grid",
+        "func": "let EnergiaAnterior = context.get(\"EnergiaAnterior\", \"file\") || 0;  //Referente há 10 minutos atrás\n//node.warn(EnergiaAnterior);\nlet SolarAnterior = context.get(\"SolarAnterior\", \"file\") || 0;\n//node.warn(SolarAnterior);\n\nlet EnergiaAtual = parseFloat(msg.payload[\"casa/medidor/energy\"]) || 0;\n//node.warn(EnergiaAtual);\nlet SolarAtual = parseFloat(msg.payload[\"casa/medidor/SolarProductionTotal\"]) || 0;\n//node.warn(SolarAtual);\n\nlet Grid = context.get(\"Grid\", \"file\") || 0;\nlet Injetada = context.get(\"Injetada\", \"file\") || 0;\n\n//  IntervaloEnergia = (Solar2[0].ValorSolar - Solar1[0].ValorSolar) - (energy - energy1);\n//                       (Anterior                  Atual)       -       (Anterior - Atual)\nif((EnergiaAtual - EnergiaAnterior) >= 0.1 && (EnergiaAnterior > 0 && SolarAnterior > 0)){\nlet IntervaloEnergia = (SolarAtual - SolarAnterior) - (EnergiaAtual - EnergiaAnterior)\n//Salva os valores já utilizados\ncontext.set(\"EnergiaAnterior\", EnergiaAtual, \"file\");\ncontext.set(\"SolarAnterior\", SolarAtual, \"file\");\nif(IntervaloEnergia <= 0){\n    //Usando energia da rede Grid\n    Grid += (-1 * IntervaloEnergia);\n    msg.topic = \"casa/medidor/energyGrid_total\"\n    context.set(\"Grid\", Grid, \"file\");\n    msg.payload = Grid.toFixed(2);\n    return msg;\n} else{\n    Injetada += IntervaloEnergia;\n    msg.topic = \"casa/medidor/InjectedEnergy_total\";\n    context.set(\"Injetada\", Injetada, \"file\");\n    msg.payload = Injetada.toFixed(2);\n    return msg;\n} \n}\n\n// Se for a primeira execução, apenas salva os valores e não retorna nada ainda\n//context.set(\"EnergiaAnterior\", EnergiaAtual, \"file\");\n//context.set(\"SolarAnterior\", SolarAtual, \"file\");\nreturn null;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 320,
+        "wires": [
+            [
+                "1abf5288c62cb699",
+                "201d67213435aefb"
+            ]
+        ]
+    },
+    {
+        "id": "5babe960243aef0e",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "192.168.1.1",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    }
+]
